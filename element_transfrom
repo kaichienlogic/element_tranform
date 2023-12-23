@@ -1,0 +1,97 @@
+clc;
+clear all
+a=textread('ELIST.lis','%s');
+b=[];
+n=0;
+c=0;
+k=0;
+m=mod(length(a)-8,207);
+for j=8:207:length(a)-m
+    n=0;
+    while n < 200 & j < length(a)-m
+     c=c+1;
+     b(c)=cellfun(@str2num,a(j+n));
+     n=n+1;
+    end
+end
+
+n=0;
+while n < m+1
+     c=c+1;
+     b(c)=cellfun(@str2num,a(j+n));
+     n=n+1;  
+end
+
+element=[];
+n1=0;n2=0;
+k=length(b)/10;
+n1=k;
+n2=5;
+n=0;
+for j=1:k
+        element(j,1)=b(1+n*10);
+       for r=2:n2
+           element(j,r)=b(n*10+6+r-1);
+       end
+    n=n+1;
+end
+
+a=textread('NLIST.lis','%s');
+b=[];
+n=0;
+c=0;
+k=0;
+m=mod(length(a),84);
+for j=1:84:length(a)-m
+    n=0;
+    while n < 80 & j < length(a)-m
+     c=c+1;
+     b(c)=cellfun(@str2num,a(j+4+n));
+     n=n+1;
+    end
+end
+j=length(a)-m;
+n=0;
+while n < m-4
+     c=c+1;
+     n=n+1;
+     b(c)=cellfun(@str2num,a(j+n+4));
+end
+
+node=[];
+c=0;
+for j=1:4:length(b)-3
+    c=c+1;
+    node(c,1)=b(j);
+    node(c,2)=b(j+1);  
+    node(c,3)=b(j+2);
+    node(c,4)=b(j+3);
+end
+
+fid=fopen('element.dat','w');
+[rr,cc]=size(element);
+
+for j=1:rr
+    for k=1:cc
+        if k ~= cc
+           fprintf(fid,'%4.0f\b',element(j,k));
+        elseif k == cc
+           fprintf(fid,'%4.0f\n',element(j,k));
+        end
+    end
+end
+fclose(fid)
+
+fid=fopen('node.dat','w');
+[rr,cc]=size(node);
+
+for j=1:rr
+    for k=1:cc
+        if k ~= cc
+           fprintf(fid,'%8.15f\b',node(j,k));
+        elseif k == cc
+           fprintf(fid,'%8.15f\n',node(j,k));
+        end
+    end
+end
+fclose(fid)
